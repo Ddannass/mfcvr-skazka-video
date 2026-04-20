@@ -13,30 +13,157 @@
       display: grid;
       place-items: center;
       min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .wrap {
       width: min(1000px, 95vw);
     }
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 16px;
+    .player {
+      background: #1a1a1a;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
 
     video {
       width: 100%;
-      border-radius: 12px;
+      display: block;
       background: #000;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a1a;
+    }
+
+    button, select, a.control-link {
+      background: #2b2b2b;
+      color: #fff;
+      border: 1px solid #3d3d3d;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: .2s ease;
+    }
+
+    button:hover, select:hover, a.control-link:hover {
+      background: #3a3a3a;
+    }
+
+    .time {
+      font-size: 14px;
+      color: #ccc;
+      min-width: 110px;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .controls {
+        justify-content: stretch;
+      }
+
+      button, select, a.control-link {
+        flex: 1 1 calc(50% - 10px);
+        text-align: center;
+      }
+
+      .time {
+        flex: 1 1 100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <video controls playsinline>
-      <source src="./skazka.mp4" type="video/mp4">
-      Ваш браузер не поддерживает видео.
-    </video>
+    <div class="player" id="player">
+      <video id="video" controls playsinline>
+        <source src="./skazka.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+
+      <div class="controls">
+        <button type="button" id="restartBtn">Сначала</button>
+        <button type="button" id="backBtn">-10 сек</button>
+        <button type="button" id="forwardBtn">+10 сек</button>
+
+        <select id="speedSelect" aria-label="Скорость воспроизведения">
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+
+        <button type="button" id="fullscreenBtn">На весь экран</button>
+        <a class="control-link" href="./skazka.mp4" download="skazka.mp4">Скачать</a>
+
+        <div class="time" id="timeDisplay">0:00 / 0:00</div>
+      </div>
+    </div>
   </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const player = document.getElementById('player');
+    const restartBtn = document.getElementById('restartBtn');
+    const backBtn = document.getElementById('backBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
+    const speedSelect = document.getElementById('speedSelect');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const timeDisplay = document.getElementById('timeDisplay');
+
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateTime() {
+      timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+    }
+
+    restartBtn.addEventListener('click', () => {
+      video.currentTime = 0;
+      video.play();
+    });
+
+    backBtn.addEventListener('click', () => {
+      video.currentTime = Math.max(0, video.currentTime - 10);
+    });
+
+    forwardBtn.addEventListener('click', () => {
+      video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
+    });
+
+    speedSelect.addEventListener('change', () => {
+      video.playbackRate = Number(speedSelect.value);
+    });
+
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        if (player.requestFullscreen) {
+          player.requestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    video.addEventListener('loadedmetadata', updateTime);
+    video.addEventListener('timeupdate', updateTime);
+  </script>
 </body>
 </html>
