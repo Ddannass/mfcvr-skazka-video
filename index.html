@@ -98,6 +98,8 @@
       </video>
 
       <div class="controls">
+        <button type="button" id="playBtn">Плей</button>
+        <button type="button" id="pauseBtn">Пауза</button>
         <button type="button" id="restartBtn">Сначала</button>
         <button type="button" id="backBtn">-10 сек</button>
         <button type="button" id="forwardBtn">+10 сек</button>
@@ -119,6 +121,8 @@
 
   <script>
     const video = document.getElementById('video');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
     const restartBtn = document.getElementById('restartBtn');
     const backBtn = document.getElementById('backBtn');
     const forwardBtn = document.getElementById('forwardBtn');
@@ -135,6 +139,14 @@
     function updateTime() {
       timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
     }
+
+    playBtn.addEventListener('click', () => {
+      video.play();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      video.pause();
+    });
 
     restartBtn.addEventListener('click', () => {
       video.currentTime = 0;
