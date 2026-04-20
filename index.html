@@ -91,7 +91,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="player" id="player">
+    <div class="player">
       <video id="video" controls playsinline>
         <source src="./skazka.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
@@ -110,7 +110,6 @@
           <option value="2">2x</option>
         </select>
 
-        <button type="button" id="fullscreenBtn">На весь экран</button>
         <a class="control-link" href="./skazka.mp4" download="skazka.mp4">Скачать</a>
 
         <div class="time" id="timeDisplay">0:00 / 0:00</div>
@@ -120,12 +119,10 @@
 
   <script>
     const video = document.getElementById('video');
-    const player = document.getElementById('player');
     const restartBtn = document.getElementById('restartBtn');
     const backBtn = document.getElementById('backBtn');
     const forwardBtn = document.getElementById('forwardBtn');
     const speedSelect = document.getElementById('speedSelect');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
     const timeDisplay = document.getElementById('timeDisplay');
 
     function formatTime(seconds) {
@@ -154,18 +151,6 @@
 
     speedSelect.addEventListener('change', () => {
       video.playbackRate = Number(speedSelect.value);
-    });
-
-    fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        if (player.requestFullscreen) {
-          player.requestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
     });
 
     video.addEventListener('loadedmetadata', updateTime);
